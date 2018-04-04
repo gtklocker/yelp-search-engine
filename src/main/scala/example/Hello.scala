@@ -1,5 +1,7 @@
 package example
 
+import java.sql.{Connection,DriverManager}
+
 import org.apache.lucene.analysis.core.SimpleAnalyzer
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.{Document, TextField, StringField, Field}

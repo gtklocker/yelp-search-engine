@@ -9,5 +9,6 @@ lazy val root = (project in file(".")).
     )),
     name := "Hello",
     libraryDependencies += scalaTest % Test,
-    libraryDependencies ++= luceneDependencies
+    libraryDependencies ++= luceneDependencies,
+    libraryDependencies ++= mysqlDependencies
   )
