@@ -1,28 +1,13 @@
-package example
-
-import java.sql.{Connection,DriverManager}
+package ir
 
 import org.apache.lucene.analysis.core.SimpleAnalyzer
 import org.apache.lucene.analysis.standard.StandardAnalyzer
-import org.apache.lucene.document.{Document, TextField, StringField, Field}
 import org.apache.lucene.index.{DirectoryReader, IndexWriter, IndexWriterConfig, Term}
 import org.apache.lucene.search.{IndexSearcher, Query, TermQuery, TopDocs}
 import org.apache.lucene.store.RAMDirectory
 
-object Hello extends App {
-  val directory = new RAMDirectory
-  val writerConfig = new IndexWriterConfig(new SimpleAnalyzer)
-  val writer = new IndexWriter(directory, writerConfig)
-
-  val doc = new Document
-  doc.add(new TextField("tweet", "the weather is really sunny today in GLasGoWw", Field.Store.YES))
-  doc.add(new StringField("author", "gtklocker", Field.Store.YES))
-  writer.addDocument(doc)
-
-  println(s"${writer.numDocs} document(s) indexed!")
-  writer.close
-
-  val reader = DirectoryReader.open(directory)
+object Searcher extends App {
+  val reader = DirectoryReader.open(Lucene.directory)
   val searcher = new IndexSearcher(reader)
 
   val searchTerm = "sunny"
