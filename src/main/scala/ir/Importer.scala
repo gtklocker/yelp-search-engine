@@ -1,7 +1,7 @@
 package ir
 
 import java.sql.{Connection,DriverManager}
-import org.apache.lucene.document.{Document, TextField, StringField, Field}
+import org.apache.lucene.document.{Document, TextField, StringField, LatLonDocValuesField, Field}
 import org.apache.lucene.index.IndexWriter
 
 object Importer extends App {
@@ -17,7 +17,7 @@ object Importer extends App {
     Class.forName(driver)
     connection = DriverManager.getConnection(url, username, password)
     val statement = connection.createStatement
-    val query = """select business_id, name, text
+    val query = """select business_id, name, text, latitude, longitude
                   |from business join review
                   |on business.id = review.business_id
                   |where review_count >= 100
@@ -27,12 +27,20 @@ object Importer extends App {
       val businessId = rs.getString("business_id")
       val name = rs.getString("name")
       val review = rs.getString("text")
-      println("businessId = %s, name = %s, text = %s".format(businessId, name, review))
+      val latitude = rs.getFloat("latitude")
+      val longitude = rs.getFloat("longitude")
+      println("""businessId = %s,
+                 |name = %s,
+                 |text = %s
+                 |latitude = %f
+                 |longitude = %f""".stripMargin.format(
+                   businessId, name, review, latitude, longitude))
 
       val doc = new Document
       doc.add(new StringField("business_id", businessId, Field.Store.YES))
       doc.add(new StringField("business_name", name, Field.Store.YES))
       doc.add(new TextField("review", review, Field.Store.YES))
+      doc.add(new LatLonDocValuesField("location", latitude, longitude))
       writer.addDocument(doc)
     }
   } catch {
