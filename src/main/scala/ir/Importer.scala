@@ -2,15 +2,17 @@ package ir
 
 import java.sql.{Connection,DriverManager}
 import org.apache.lucene.document.{Document, TextField, StringField, Field}
+import org.apache.lucene.index.IndexWriter
 
 object Importer extends App {
-  println("Starting import...")
+  println("Starting import... to %s".format(Lucene.indexPath.toString()))
 
   val url = "jdbc:mysql://localhost:3306/yelp_db"
   val driver = "com.mysql.jdbc.Driver"
   val username = "root"
   val password = "root"
   var connection:Connection = _
+  val writer = new IndexWriter(Lucene.directory, Lucene.writerConfig)
   try {
     Class.forName(driver)
     connection = DriverManager.getConnection(url, username, password)
@@ -31,15 +33,15 @@ object Importer extends App {
       doc.add(new StringField("business_id", businessId, Field.Store.YES))
       doc.add(new StringField("business_name", name, Field.Store.YES))
       doc.add(new TextField("review", review, Field.Store.YES))
-      Lucene.writer.addDocument(doc)
+      writer.addDocument(doc)
     }
   } catch {
     case e: Exception => e.printStackTrace
   }
   connection.close
 
-  println(s"${Lucene.writer.numDocs} document(s) indexed!")
-  Lucene.writer.close
+  println(s"${writer.numDocs} document(s) indexed!")
+  writer.close
 
   println("Import done.")
 }
