@@ -17,10 +17,11 @@ object Importer extends App {
     Class.forName(driver)
     connection = DriverManager.getConnection(url, username, password)
     val statement = connection.createStatement
-    val query = """select business_id, name, text, latitude, longitude
+    val query = """select business_id, name, group_concat(review.text," ") as text, latitude, longitude
                   |from business join review
                   |on business.id = review.business_id
-                  |where review_count >= 100
+		  |group by business_id
+                  |having count(*)>= 100
                   |limit 10""".stripMargin
     val rs = statement.executeQuery(query)
     while (rs.next) {
