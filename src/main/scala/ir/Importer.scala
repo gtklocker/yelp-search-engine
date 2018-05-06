@@ -31,6 +31,7 @@ object Importer extends App {
                      |join business
                      |on review.business_id = business.id
                      """.stripMargin
+      println("Importing review documents: ")
       val rs = statement.executeQuery(query)
       
       while (rs.next) {
@@ -38,11 +39,7 @@ object Importer extends App {
         val reviewText = rs.getString("text")
         val date = rs.getDate("date").getTime()
         val useful = rs.getLong("useful")
-        println("""name = %s,
-                   |text = %s,
-                   |date = %s,
-                   |useful = %d,""".stripMargin.format(
-                     businessName,reviewText,date,useful))
+        print(".")
         val doc = new Document
         doc.add(new StringField("business_name", businessName, Field.Store.YES))
         doc.add(new TextField("review_text", reviewText, Field.Store.YES))
@@ -50,6 +47,7 @@ object Importer extends App {
         doc.add(new NumericDocValuesField("useful", useful))
         writer.addDocument(doc)
       }
+      println("")
     }catch {
       case e: Exception => e.printStackTrace
     }
@@ -67,6 +65,7 @@ object Importer extends App {
                     |group by business_id
                     |having count(*)>= 100
                     """.stripMargin
+      println("Importing business documents: ")
       val rs = statement.executeQuery(query)
       while (rs.next) {
         val businessId = rs.getString("business_id")
@@ -75,13 +74,7 @@ object Importer extends App {
         val stars = rs.getFloat("stars")
         val latitude = rs.getFloat("latitude")
         val longitude = rs.getFloat("longitude")
-        println("""businessId = %s,
-                   |name = %s,
-                   |text = %s,
-                   |stars = %f,
-                   |latitude = %f,
-                   |longitude = %f""".stripMargin.format(
-                     businessId, name, review, stars, latitude, longitude))
+        print(".")
         val doc = new Document
         doc.add(new StringField("business_id", businessId, Field.Store.YES))
         doc.add(new StringField("business_name", name, Field.Store.YES))
@@ -90,6 +83,7 @@ object Importer extends App {
         doc.add(new LatLonDocValuesField("location", latitude, longitude))
         writer.addDocument(doc)
       }
+      println("")
     } catch {
       case e: Exception => e.printStackTrace
     }
