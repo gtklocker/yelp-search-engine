@@ -22,18 +22,18 @@ object Searcher extends App {
   def findBusinessesByReview(text: Option[String], location: Option[(Double, Double)]): Array[Document] = {
     val queryBuilder = new BooleanQuery.Builder()
     if (text.isDefined) {
-      queryBuilder.add(reviewContainsText(text.get), BooleanClause.Occur.SHOULD)
+      queryBuilder.add(businessHasReviewContaining(text.get), BooleanClause.Occur.SHOULD)
     }
     if (location.isDefined) {
-      queryBuilder.add(reviewForBusinessNearLocation(location.get), BooleanClause.Occur.SHOULD)
+      queryBuilder.add(businessNearLocation(location.get), BooleanClause.Occur.SHOULD)
     }
     return docsForQuery(queryBuilder.build())
   }
 
-  def reviewContainsText(text: String): Query =
+  def businessHasReviewContaining(text: String): Query =
     new TermQuery(new Term("review", text))
 
-  def reviewForBusinessNearLocation(location: (Double, Double)): Query =
+  def businessNearLocation(location: (Double, Double)): Query =
     LatLonPoint.newDistanceQuery("location", location._1, location._2, MAX_LOCATION_RADIUS)
 
   def docsForQuery(query: Query): Array[Document] = {
