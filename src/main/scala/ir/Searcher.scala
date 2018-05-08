@@ -13,9 +13,9 @@ object Searcher extends App {
   val MAX_HITS = 20
   val MAX_LOCATION_RADIUS = 50
 
-  searchBusinessesByReview(Some("bitch"), Some(51.509865, -0.118092))
+  findBusinessesByReview(Some("bitch"), Some(51.509865, -0.118092))
 
-  def searchBusinessesByReview(text: Option[String], location: Option[(Double, Double)]) {
+  def findBusinessesByReview(text: Option[String], location: Option[(Double, Double)]) {
     val queryBuilder = new BooleanQuery.Builder()
     if (text.isDefined) {
       queryBuilder.add(reviewContainsText(text.get), BooleanClause.Occur.SHOULD)
