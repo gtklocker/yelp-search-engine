@@ -14,4 +14,6 @@ object Lucene {
   val indexPath = Paths.get(homePath, "yelp_index")
   val directory = FSDirectory.open(indexPath)
   val writerConfig = new IndexWriterConfig(new SimpleAnalyzer)
+
+  def writer(): IndexWriter = new IndexWriter(Lucene.directory, Lucene.writerConfig)
 }
