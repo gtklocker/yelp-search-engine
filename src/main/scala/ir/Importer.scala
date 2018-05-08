@@ -33,19 +33,25 @@ object Importer extends App {
                              """.stripMargin)
     
     while (rs.next) {
-      val businessName = rs.getString("business.name")
-      val reviewText = rs.getString("text")
-      val date = rs.getDate("date").getTime()
-      val useful = rs.getLong("useful")
+      writer.addDocument(makeReviewDocument(
+        businessName = rs.getString("business.name"),
+        reviewText = rs.getString("text"),
+        date = rs.getDate("date").getTime(),
+        useful = rs.getLong("useful")
+      ))
       print(".")
-      val doc = new Document
-      doc.add(new StringField("business_name", businessName, Field.Store.YES))
-      doc.add(new TextField("review_text", reviewText, Field.Store.YES))
-      doc.add(new NumericDocValuesField("date", date))
-      doc.add(new NumericDocValuesField("useful", useful))
-      writer.addDocument(doc)
     }
     println("")
+  }
+
+  def makeReviewDocument(businessName: String, reviewText: String, date: Long,
+      useful: Long): Document = {
+    val doc = new Document
+    doc.add(new StringField("business_name", businessName, Field.Store.YES))
+    doc.add(new TextField("review_text", reviewText, Field.Store.YES))
+    doc.add(new NumericDocValuesField("date", date))
+    doc.add(new NumericDocValuesField("useful", useful))
+    doc
   }
 
   def indexBusinessDocuments() {
@@ -58,22 +64,28 @@ object Importer extends App {
                              |having count(*)>= 100
                              """.stripMargin)
     while (rs.next) {
-      val businessId = rs.getString("business_id")
-      val name = rs.getString("name")
-      val review = rs.getString("text")
-      val stars = rs.getFloat("stars")
-      val latitude = rs.getFloat("latitude")
-      val longitude = rs.getFloat("longitude")
+      writer.addDocument(makeBusinessDocument(
+        id = rs.getString("business_id"),
+        name = rs.getString("name"),
+        allReviews = rs.getString("text"),
+        stars = rs.getFloat("stars"),
+        latitude = rs.getFloat("latitude"),
+        longitude = rs.getFloat("longitude")
+      ))
       print(".")
-      val doc = new Document
-      doc.add(new StringField("business_id", businessId, Field.Store.YES))
-      doc.add(new StringField("business_name", name, Field.Store.YES))
-      doc.add(new FloatDocValuesField("stars",stars))
-      doc.add(new TextField("review", review, Field.Store.YES))
-      doc.add(new LatLonDocValuesField("location", latitude, longitude))
-      writer.addDocument(doc)
     }
     println("")
+  }
+
+  def makeBusinessDocument(id: String, name: String, stars: Float, allReviews:
+      String, latitude: Double, longitude: Double): Document = {
+    val doc = new Document
+    doc.add(new StringField("business_id", id, Field.Store.YES))
+    doc.add(new StringField("business_name", name, Field.Store.YES))
+    doc.add(new FloatDocValuesField("stars", stars))
+    doc.add(new TextField("review", allReviews, Field.Store.YES))
+    doc.add(new LatLonDocValuesField("location", latitude, longitude))
+    doc
   }
 
   def queryResults(query: String): java.sql.ResultSet = {
