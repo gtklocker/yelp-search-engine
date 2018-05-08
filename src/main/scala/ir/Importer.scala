@@ -3,12 +3,11 @@ package ir
 import DocumentMakers.{makeReviewDocument, makeBusinessDocument}
 
 import org.apache.lucene.document.DateTools.Resolution
-import org.apache.lucene.index.IndexWriter
 
 object Importer extends App {
   println("Starting import... to %s".format(Lucene.indexPath.toString()))
 
-  val writer = new IndexWriter(Lucene.directory, Lucene.writerConfig)
+  val writer = Lucene.writer
   val db = new Database
 
   indexReviewDocuments()
