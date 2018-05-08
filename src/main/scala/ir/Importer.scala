@@ -1,7 +1,8 @@
 package ir
 
+import Documents.{makeReviewDocument, makeBusinessDocument}
+
 import org.apache.lucene.document.DateTools.Resolution
-import org.apache.lucene.document.{Document, TextField, StringField, LatLonDocValuesField, Field, FloatDocValuesField,NumericDocValuesField,DateTools}
 import org.apache.lucene.index.IndexWriter
 
 object Importer extends App {
@@ -9,6 +10,7 @@ object Importer extends App {
 
   val writer = new IndexWriter(Lucene.directory, Lucene.writerConfig)
   val db = new Database
+
   indexReviewDocuments()
   indexBusinessDocuments()
 
@@ -39,16 +41,6 @@ object Importer extends App {
     println("")
   }
 
-  def makeReviewDocument(businessName: String, reviewText: String, date: Long,
-      useful: Long): Document = {
-    val doc = new Document
-    doc.add(new StringField("business_name", businessName, Field.Store.YES))
-    doc.add(new TextField("review_text", reviewText, Field.Store.YES))
-    doc.add(new NumericDocValuesField("date", date))
-    doc.add(new NumericDocValuesField("useful", useful))
-    doc
-  }
-
   def indexBusinessDocuments() {
     println("Importing business documents: ")
     val rs = db.queryResults("""select business_id, name, business.stars, group_concat(review.text, " ")
@@ -70,16 +62,5 @@ object Importer extends App {
       print(".")
     }
     println("")
-  }
-
-  def makeBusinessDocument(id: String, name: String, stars: Float, allReviews:
-      String, latitude: Double, longitude: Double): Document = {
-    val doc = new Document
-    doc.add(new StringField("business_id", id, Field.Store.YES))
-    doc.add(new StringField("business_name", name, Field.Store.YES))
-    doc.add(new FloatDocValuesField("stars", stars))
-    doc.add(new TextField("review", allReviews, Field.Store.YES))
-    doc.add(new LatLonDocValuesField("location", latitude, longitude))
-    doc
   }
 }
