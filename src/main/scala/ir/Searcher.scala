@@ -13,11 +13,11 @@ object Searcher extends App {
   val MAX_HITS = 20
   val MAX_LOCATION_RADIUS = 50
 
-  val hits = findBusinesses(Some("bitch"), Some(51.509865, -0.118092))
+  val hits = findBusinesses(Some("good"), None)
   println(s"Got ${hits.length} business hits.")
   for (business <- hits) {
-    val review = business.getField("review").stringValue
-    val businessName = business.getField("business_name").stringValue
+    val review = business.getField("business.allReviews").stringValue
+    val businessName = business.getField("business.name").stringValue
     println(s"Business ${businessName}: ${review.substring(0, 140)}...")
   }
 
@@ -33,10 +33,10 @@ object Searcher extends App {
   }
 
   def businessHasReviewContaining(text: String): Query =
-    new TermQuery(new Term("review", text))
+    new TermQuery(new Term("business.allReviews", text))
 
   def businessNearLocation(location: (Double, Double)): Query =
-    LatLonPoint.newDistanceQuery("location", location._1, location._2, MAX_LOCATION_RADIUS)
+    LatLonPoint.newDistanceQuery("business.location", location._1, location._2, MAX_LOCATION_RADIUS)
 
   def docsForQuery(query: Query): Array[Document] = {
     val results = searcher.search(query, MAX_HITS)
