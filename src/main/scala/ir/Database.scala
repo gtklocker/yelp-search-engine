@@ -8,6 +8,7 @@ class Database {
   private val username = "root"
   private val password = "root"
   private var connection = DriverManager.getConnection(url, username, password)
+  private val limit = sys.env.get("IR_DB_LIMIT")
 
   def close() {
     connection.close
@@ -15,6 +16,9 @@ class Database {
 
   def queryResults(query: String): ResultSet = {
     val statement = createStreamingStatement(connection)
+    if (limit.isDefined) {
+      statement.setMaxRows(limit.get.toInt)
+    }
     statement.executeQuery(query)
   }
 
