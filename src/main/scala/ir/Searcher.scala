@@ -29,7 +29,7 @@ object Searcher extends App {
     if (location.isDefined) {
       queryBuilder.add(businessNearLocation(location.get), BooleanClause.Occur.SHOULD)
     }
-    return docsForQuery(queryBuilder.build())
+    docsForQuery(queryBuilder.build())
   }
 
   def businessHasReviewContaining(text: String): Query =
@@ -40,6 +40,6 @@ object Searcher extends App {
 
   def docsForQuery(query: Query): Array[Document] = {
     val results = searcher.search(query, MAX_HITS)
-    return results.scoreDocs.map(scoreDoc => searcher.doc(scoreDoc.doc))
+    results.scoreDocs.map(scoreDoc => searcher.doc(scoreDoc.doc))
   }
 }
