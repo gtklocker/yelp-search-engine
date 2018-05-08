@@ -27,9 +27,7 @@ object Searcher extends App {
     if (location.isDefined) {
       queryBuilder.add(reviewForBusinessNearLocation(location.get), BooleanClause.Occur.SHOULD)
     }
-    val query = queryBuilder.build()
-    val results = searcher.search(query, MAX_HITS)
-    return results.scoreDocs.map(scoreDoc => searcher.doc(scoreDoc.doc))
+    return docsForQuery(queryBuilder.build())
   }
 
   def reviewContainsText(text: String): Query =
@@ -37,4 +35,9 @@ object Searcher extends App {
 
   def reviewForBusinessNearLocation(location: (Double, Double)): Query =
     LatLonPoint.newDistanceQuery("location", location._1, location._2, MAX_LOCATION_RADIUS)
+
+  def docsForQuery(query: Query): Array[Document] = {
+    val results = searcher.search(query, MAX_HITS)
+    return results.scoreDocs.map(scoreDoc => searcher.doc(scoreDoc.doc))
+  }
 }
