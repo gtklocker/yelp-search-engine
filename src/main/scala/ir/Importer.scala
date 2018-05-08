@@ -79,10 +79,11 @@ object Importer extends App {
     println("")
   }
 
-  def createStreamingStatement(connection:Connection) : Statement = {
-    val statement = connection.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-                    java.sql.ResultSet.CONCUR_READ_ONLY)
+  def createStreamingStatement(connection: Connection): Statement = {
+    val statement =
+      connection.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+        java.sql.ResultSet.CONCUR_READ_ONLY)
     statement.setFetchSize(Integer.MIN_VALUE)
-    return statement
+    statement
   }
 }
