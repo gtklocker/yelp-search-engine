@@ -25,14 +25,12 @@ object Importer extends App {
   println("Import done.")
   
   def indexReviewDocuments(){  
-    val statement = createStreamingStatement(connection) 
-    val query = """select business.name, text, date,useful 
-                   |from review
-                   |join business
-                   |on review.business_id = business.id
-                   """.stripMargin
     println("Importing review documents: ")
-    val rs = statement.executeQuery(query)
+    val rs = queryResults("""select business.name, text, date, useful
+                             |from review
+                             |join business
+                             |on review.business_id = business.id
+                             """.stripMargin)
     
     while (rs.next) {
       val businessName = rs.getString("business.name")
@@ -51,15 +49,14 @@ object Importer extends App {
   }
 
   def indexBusinessDocuments() {
-    val statement = createStreamingStatement(connection) 
-    val query = """select business_id, name, business.stars, group_concat(review.text," ") as text, latitude, longitude
-                  |from business join review
-                  |on business.id = review.business_id
-                  |group by business_id
-                  |having count(*)>= 100
-                  """.stripMargin
     println("Importing business documents: ")
-    val rs = statement.executeQuery(query)
+    val rs = queryResults("""select business_id, name, business.stars, group_concat(review.text, " ")
+                             |as text, latitude, longitude
+                             |from business join review
+                             |on business.id = review.business_id
+                             |group by business_id
+                             |having count(*)>= 100
+                             """.stripMargin)
     while (rs.next) {
       val businessId = rs.getString("business_id")
       val name = rs.getString("name")
@@ -77,6 +74,11 @@ object Importer extends App {
       writer.addDocument(doc)
     }
     println("")
+  }
+
+  def queryResults(query: String): java.sql.ResultSet = {
+    val statement = createStreamingStatement(connection)
+    statement.executeQuery(query)
   }
 
   def createStreamingStatement(connection: Connection): Statement = {
