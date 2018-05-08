@@ -13,7 +13,9 @@ object Searcher extends App {
   val MAX_HITS = 20
   val MAX_LOCATION_RADIUS = 50
 
-  for (business <- findBusinesses(Some("bitch"), Some(51.509865, -0.118092))) {
+  val hits = findBusinesses(Some("bitch"), Some(51.509865, -0.118092))
+  println(s"Got ${hits.length} business hits.")
+  for (business <- hits) {
     val review = business.getField("review").stringValue
     val businessName = business.getField("business_name").stringValue
     println(s"Business ${businessName}: ${review.substring(0, 140)}...")
