@@ -31,7 +31,7 @@ object Importer extends App {
     while (rs.next) {
       writer.addDocument(makeReviewDocument(
         businessName = rs.getString("business.name"),
-        reviewText = rs.getString("text"),
+        text = rs.getString("text"),
         date = rs.getDate("date").getTime(),
         useful = rs.getLong("useful")
       ))
