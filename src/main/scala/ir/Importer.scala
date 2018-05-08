@@ -1,6 +1,6 @@
 package ir
 
-import Documents.{makeReviewDocument, makeBusinessDocument}
+import DocumentMakers.{makeReviewDocument, makeBusinessDocument}
 
 import org.apache.lucene.document.DateTools.Resolution
 import org.apache.lucene.index.IndexWriter

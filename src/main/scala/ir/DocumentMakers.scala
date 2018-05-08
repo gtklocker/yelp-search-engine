@@ -4,7 +4,7 @@ import org.apache.lucene.document.{Document, TextField, StringField,
 LatLonDocValuesField, Field, FloatDocValuesField, NumericDocValuesField,
 DateTools}
 
-object Documents {
+object DocumentMakers {
   def makeReviewDocument(businessName: String, reviewText: String, date: Long,
       useful: Long): Document = {
     val doc = new Document
