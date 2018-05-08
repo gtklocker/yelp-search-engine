@@ -38,6 +38,7 @@ object Searcher extends App {
 
   def reviewContainsText(text: String): Query =
     new TermQuery(new Term("review", text))
+
   def reviewForBusinessNearLocation(location: (Double, Double)): Query =
     LatLonPoint.newDistanceQuery("location", location._1, location._2, MAX_LOCATION_RADIUS)
 }
