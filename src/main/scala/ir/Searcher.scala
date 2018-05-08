@@ -13,13 +13,13 @@ object Searcher extends App {
   val MAX_HITS = 20
   val MAX_LOCATION_RADIUS = 50
 
-  for (business <- findBusinessesByReview(Some("bitch"), Some(51.509865, -0.118092))) {
+  for (business <- findBusinesses(Some("bitch"), Some(51.509865, -0.118092))) {
     val review = business.getField("review").stringValue
     val businessName = business.getField("business_name").stringValue
     println(s"Business ${businessName}: ${review.substring(0, 140)}...")
   }
 
-  def findBusinessesByReview(text: Option[String], location: Option[(Double, Double)]): Array[Document] = {
+  def findBusinesses(text: Option[String], location: Option[(Double, Double)]): Array[Document] = {
     val queryBuilder = new BooleanQuery.Builder()
     if (text.isDefined) {
       queryBuilder.add(businessHasReviewContaining(text.get), BooleanClause.Occur.SHOULD)
