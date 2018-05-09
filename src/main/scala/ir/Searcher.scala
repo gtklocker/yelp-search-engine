@@ -16,12 +16,10 @@ object Searcher extends App {
   val hits = findBusinesses(Some("good"), None)
   println(s"Got ${hits.length} business hits.")
   for (business <- hits) {
-    val review = business.getField("business.allReviews").stringValue
-    val businessName = business.getField("business.name").stringValue
-    println(s"Business ${businessName}: ${review.substring(0, 140)}...")
+    println(s"Business ${business.name}: ${business.allReviews.substring(0, 140)}...")
   }
 
-  def findBusinesses(text: Option[String], location: Option[(Double, Double)]): Array[Document] = {
+  def findBusinesses(text: Option[String], location: Option[(Double, Double)]): Array[BusinessHit] = {
     val queryBuilder = new BooleanQuery.Builder()
     if (text.isDefined) {
       queryBuilder.add(businessHasReviewContaining(text.get), BooleanClause.Occur.SHOULD)
@@ -30,6 +28,7 @@ object Searcher extends App {
       queryBuilder.add(businessNearLocation(location.get), BooleanClause.Occur.SHOULD)
     }
     docsForQuery(queryBuilder.build())
+      .map(BusinessHit.fromDocument)
   }
 
   def businessHasReviewContaining(text: String): Query =
