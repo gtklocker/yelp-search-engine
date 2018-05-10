@@ -1,11 +1,26 @@
-import org.scalatra._
+package ir
 
-class SearcherAPI extends ScalatraServlet {
-  get("/") {
-    <h1>Hello, world!</h1>
+import org.scalatra._
+import org.scalatra.json._
+import org.json4s.{DefaultFormats, Formats}
+
+class SearcherAPI extends ScalatraServlet with JacksonJsonSupport {
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+
+  before() {
+    contentType = formats("json")
   }
 
-  get("/hello") {
-    <h1>Hello, world again!</h1>
+  get("/businesses") {
+    val location = (params.get("latitude"), params.get("longitude")) match {
+      case (Some(lat), Some(long)) => Some((lat.toDouble, long.toDouble))
+      case _                       => None
+    }
+    val sortBy = params.get("sortBy") match {
+      case Some("reviewCount") => Some(SortByReviewCount)
+      case Some("stars")       => Some(SortByStars)
+      case _                   => None
+    }
+    Searcher.findBusinesses(params.get("text"), location, sortBy)
   }
 }

@@ -18,26 +18,14 @@ class ReviewSortField(val field: String, val fieldType: SortField.Type, reverse:
 object SortByUseful extends ReviewSortField("review.useful", SortField.Type.LONG)
 object SortByDate extends ReviewSortField("review.date", SortField.Type.LONG, true)
 
-object Searcher extends App {
+object Searcher {
   val reader = DirectoryReader.open(Lucene.directory)
   val searcher = new IndexSearcher(reader)
   val MAX_HITS = 20
   val MAX_LOCATION_RADIUS = 50
 
-  val businessHits = findBusinesses(Some("gtklockern0m4tch3s"), None, sortedBy = Some(SortByStars))
-  println(s"Got ${businessHits.length} business hits.")
-  for (business <- businessHits) {
-    println(s"Business ${business.name}: ${business.allReviews.substring(0, 140)}...")
-  }
-
-  val reviewHits = findReviews(businessName = Some("pizza"), text = Some("good"), sortedBy = Some(SortByDate))
-  println(s"Got ${reviewHits.length} review hits.")
-  for (review <- reviewHits) {
-    println(s"Review ${review.businessName}: ${review.text.substring(0, 140)}...")
-  }
-
   def findBusinesses(text: Option[String], location: Option[(Double, Double)],
-      sortedBy: Option[BusinessSortField]): Array[BusinessHit] = {
+      sortedBy: Option[BusinessSortField]): List[BusinessHit] = {
     val queryBuilder = new BooleanQuery.Builder()
     if (text.isDefined) {
       queryBuilder.add(businessHasReviewContaining(text.get), BooleanClause.Occur.SHOULD)
@@ -49,6 +37,7 @@ object Searcher extends App {
     val query = queryBuilder.build()
     docsForQuery(query, sortedBy)
       .map(BusinessHit.fromDocument)
+      .toList
   }
 
   def businessHasReviewContaining(text: String): Query =
@@ -84,5 +73,19 @@ object Searcher extends App {
       case None            => searcher.search(query, MAX_HITS)
     }
     results.scoreDocs.map(scoreDoc => searcher.doc(scoreDoc.doc))
+  }
+}
+
+object SearcherDemo extends App {
+  val businessHits = Searcher.findBusinesses(Some("gtklockern0m4tch3s"), None, sortedBy = Some(SortByStars))
+  println(s"Got ${businessHits.length} business hits.")
+  for (business <- businessHits) {
+    println(s"Business ${business.name}: ${business.allReviews.substring(0, 140)}...")
+  }
+
+  val reviewHits = Searcher.findReviews(businessName = Some("pizza"), text = Some("good"), sortedBy = Some(SortByDate))
+  println(s"Got ${reviewHits.length} review hits.")
+  for (review <- reviewHits) {
+    println(s"Review ${review.businessName}: ${review.text.substring(0, 140)}...")
   }
 }
