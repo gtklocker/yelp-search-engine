@@ -47,7 +47,7 @@ object Searcher {
     LatLonPoint.newDistanceQuery("business.location", location._1, location._2, MAX_LOCATION_RADIUS)
 
   def findReviews(businessName: Option[String], text: Option[String], sortedBy:
-    Option[ReviewSortField]): Array[ReviewHit] = {
+    Option[ReviewSortField]): List[ReviewHit] = {
     val queryBuilder = new BooleanQuery.Builder()
     if (businessName.isDefined) {
       queryBuilder.add(reviewForBusinessWithName(businessName.get), BooleanClause.Occur.SHOULD)
@@ -59,6 +59,7 @@ object Searcher {
     val query = queryBuilder.build()
     docsForQuery(query, sortedBy)
       .map(ReviewHit.fromDocument)
+      .toList
   }
 
   def reviewForBusinessWithName(businessName: String): Query =

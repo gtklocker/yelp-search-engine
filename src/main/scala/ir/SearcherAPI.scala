@@ -23,4 +23,13 @@ class SearcherAPI extends ScalatraServlet with JacksonJsonSupport {
     }
     Searcher.findBusinesses(params.get("text"), location, sortBy)
   }
+
+  get("/reviews") {
+    val sortBy = params.get("sortBy") match {
+      case Some("useful")   => Some(SortByUseful)
+      case Some("date")     => Some(SortByDate)
+      case _                => None
+    }
+    Searcher.findReviews(params.get("businessName"), params.get("text"), sortBy)
+  }
 }
