@@ -37,7 +37,6 @@ object Searcher {
     val query = queryBuilder.build()
     docsForQuery(query, sortedBy)
       .map(BusinessHit.fromDocument)
-      .toList
   }
 
   def businessHasReviewContaining(text: String): Query =
@@ -59,7 +58,6 @@ object Searcher {
     val query = queryBuilder.build()
     docsForQuery(query, sortedBy)
       .map(ReviewHit.fromDocument)
-      .toList
   }
 
   def reviewForBusinessWithName(businessName: String): Query =
@@ -68,12 +66,14 @@ object Searcher {
   def reviewContains(text: String): Query =
     new TermQuery(new Term("review.text", text))
 
-  def docsForQuery(query: Query, sortedBy: Option[SortField]): Array[Document] = {
+  def docsForQuery(query: Query, sortedBy: Option[SortField]): List[Document] = {
     val results = sortedBy match {
       case Some(sortField) => searcher.search(query, MAX_HITS, new Sort(sortField))
       case None            => searcher.search(query, MAX_HITS)
     }
-    results.scoreDocs.map(scoreDoc => searcher.doc(scoreDoc.doc))
+    results.scoreDocs
+      .map(scoreDoc => searcher.doc(scoreDoc.doc))
+      .toList
   }
 }
 
