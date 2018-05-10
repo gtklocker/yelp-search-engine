@@ -1,7 +1,7 @@
 package ir
 
 import org.apache.lucene.document.{Document, TextField, StringField,
-LatLonDocValuesField, Field, FloatDocValuesField, NumericDocValuesField,
+LatLonPoint, Field, FloatDocValuesField, NumericDocValuesField,
 DateTools}
 
 object DocumentMakers {
@@ -27,7 +27,7 @@ object DocumentMakers {
     doc.add(new FloatDocValuesField(ns("stars"), stars))
     doc.add(new TextField(ns("allReviews"), allReviews, Field.Store.YES))
     doc.add(new NumericDocValuesField(ns("reviewCount"), reviewCount))
-    doc.add(new LatLonDocValuesField(ns("location"), latitude, longitude))
+    doc.add(new LatLonPoint(ns("location"), latitude, longitude))
     doc
   }
 }
