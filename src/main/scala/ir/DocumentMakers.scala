@@ -18,7 +18,7 @@ object DocumentMakers {
   }
 
   def makeBusinessDocument(id: String, name: String, stars: Float, allReviews:
-      String, latitude: Double, longitude: Double): Document = {
+      String, reviewCount: Long, latitude: Double, longitude: Double): Document = {
     def ns(fieldName: String) = "business." + fieldName
 
     val doc = new Document
@@ -26,6 +26,7 @@ object DocumentMakers {
     doc.add(new StringField(ns("name"), name, Field.Store.YES))
     doc.add(new FloatDocValuesField(ns("stars"), stars))
     doc.add(new TextField(ns("allReviews"), allReviews, Field.Store.YES))
+    doc.add(new NumericDocValuesField(ns("reviewCount"), reviewCount))
     doc.add(new LatLonDocValuesField(ns("location"), latitude, longitude))
     doc
   }

@@ -43,17 +43,18 @@ object Importer extends App {
   def indexBusinessDocuments() {
     println("Importing business documents: ")
     val rs = db.queryResults("""select business_id, name, business.stars, group_concat(review.text, " ")
-                               |as text, latitude, longitude
+                               |as text, count(*) as reviewCount, latitude, longitude
                                |from business join review
                                |on business.id = review.business_id
                                |group by business_id
-                               |having count(*)>= 100
+                               |having count(*) >= 100
                                """.stripMargin)
     while (rs.next) {
       writer.addDocument(makeBusinessDocument(
         id = rs.getString("business_id"),
         name = rs.getString("name"),
         allReviews = rs.getString("text"),
+        reviewCount = rs.getLong("reviewCount"),
         stars = rs.getFloat("stars"),
         latitude = rs.getFloat("latitude"),
         longitude = rs.getFloat("longitude")

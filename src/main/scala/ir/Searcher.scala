@@ -9,7 +9,7 @@ import org.apache.lucene.store.RAMDirectory
 import org.apache.lucene.document.{Document, LatLonPoint}
 
 class BusinessSortField(val field: String, val fieldType: SortField.Type) extends SortField(field, fieldType)
-object SortByReviewCount extends BusinessSortField("business.reviewCount", SortField.Type.INT)
+object SortByReviewCount extends BusinessSortField("business.reviewCount", SortField.Type.LONG)
 object SortByStars extends BusinessSortField("business.stars", SortField.Type.FLOAT)
 
 object Searcher extends App {
