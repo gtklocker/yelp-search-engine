@@ -7,7 +7,7 @@ class SearcherWeb extends ScalatraServlet {
     views.html.businessSearch()
   }
 
-  get("/search/restaurants") {
+  get("/search/reviews") {
     //views.html.restaurantSearch()
   }
 
