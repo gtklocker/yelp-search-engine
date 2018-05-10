@@ -28,6 +28,7 @@ class SearcherAPI extends ScalatraServlet {
       case Some("date")     => Some(SortByDate)
       case _                => None
     }
-    Searcher.findReviews(nonempty(params.get("businessName")), nonempty(params.get("text")), sortBy)
+    val hits = Searcher.findReviews(nonempty(params.get("businessName")), nonempty(params.get("text")), sortBy)
+    views.html.reviewResults(hits)
   }
 }
