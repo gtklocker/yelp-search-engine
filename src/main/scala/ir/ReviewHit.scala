@@ -2,7 +2,7 @@ package ir
 
 import org.apache.lucene.document.Document
 
-class ReviewHit(val businessName: String, val text: String)
+case class ReviewHit(businessName: String, text: String)
 
 object ReviewHit {
   def fromDocument(doc: Document) = new ReviewHit(
