@@ -18,7 +18,8 @@ class SearcherAPI extends ScalatraServlet {
       case Some("stars")       => Some(SortByStars)
       case _                   => None
     }
-    Searcher.findBusinesses(nonempty(params.get("text")), location, sortBy)
+    val hits = Searcher.findBusinesses(nonempty(params.get("text")), location, sortBy)
+    views.html.businessResults(hits)
   }
 
   get("/reviews") {
