@@ -1,0 +1,20 @@
+@()
+@layouts.html.default("Search for reviews"){
+<form action='/results/reviews'>
+	<h2>Search for reviews</h2>
+	<div class="form-row form-group">
+		<input placeholder="Review text" name="text" class="form-control form-control-lg">
+	</div>
+	<div class="form-row form-group">
+		<input placeholder="Business name" name="businessName" class="form-control">
+	</div>
+	<select name="sortBy" class="form-row form-control form-group">
+		<option value="">Sort by...</option>
+		<option value="useful">Sort by usefulness</option>
+		<option value="date">Sort by when posted</option>
+	</select>
+	<input type="submit" value="Search" class="btn btn-primary">
+</form>
+
+<a href='/search/businesses'>Or search for businesses instead...</a>
+}
