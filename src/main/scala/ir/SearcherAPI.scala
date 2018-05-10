@@ -4,11 +4,12 @@ import org.scalatra._
 import org.scalatra.json._
 import org.json4s.{DefaultFormats, Formats}
 
-class SearcherAPI extends ScalatraServlet with JacksonJsonSupport {
+class SearcherAPI extends ScalatraServlet with JacksonJsonSupport with CorsSupport {
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   before() {
     contentType = formats("json")
+    response.setHeader("Access-Control-Allow-Origin", "*")
   }
 
   get("/businesses") {
