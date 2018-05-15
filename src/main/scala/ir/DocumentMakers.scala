@@ -13,7 +13,9 @@ object DocumentMakers {
     doc.add(new StringField(ns("business.name"), businessName, Field.Store.YES))
     doc.add(new TextField(ns("text"), text, Field.Store.YES))
     doc.add(new NumericDocValuesField(ns("date"), date))
+    doc.add(new StoredField(ns("date"), date))
     doc.add(new NumericDocValuesField(ns("useful"), useful))
+    doc.add(new StoredField(ns("useful"), useful))
     doc
   }
 
