@@ -78,15 +78,18 @@ object Searcher {
 }
 
 object SearcherDemo extends App {
-  val businessHits = Searcher.findBusinesses(Some("gtklockern0m4tch3s"), None, sortedBy = Some(SortByStars))
+  //val businessHits = Searcher.findBusinesses(Some("bad"), None, sortedBy = Some(SortByStars))
+  val businessHits = Searcher.findBusinesses(Some("bad"), None, sortedBy = None)
   println(s"Got ${businessHits.length} business hits.")
   for (business <- businessHits) {
-    println(s"Business ${business.name}: ${business.allReviews.substring(0, 140)}...")
+    println(s"Business ${business.name} (${business.stars}): ${business.allReviews.substring(0, 140)}...")
   }
 
+  /*
   val reviewHits = Searcher.findReviews(businessName = Some("pizza"), text = Some("good"), sortedBy = Some(SortByDate))
   println(s"Got ${reviewHits.length} review hits.")
   for (review <- reviewHits) {
     println(s"Review ${review.businessName}: ${review.text.substring(0, 140)}...")
   }
+  */
 }
