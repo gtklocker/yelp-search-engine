@@ -1,4 +1,5 @@
 @(hits: List[ir.BusinessHit])
+@import play.twirl.api.HtmlFormat
 @layouts.html.default("Business results") {
 @for(hit <- hits) {
   <div class='card row mt-3' id='businessView'>
@@ -28,7 +29,7 @@
       </h6>
 
       <p class='card-text expandable-text'>
-      @hit.allReviews.substring(0, 140)...
+      @Html(HtmlFormat.escape(hit.allReviews).toString.replace("\n", "<br />"))
       </p>
     </div>
   </div>
