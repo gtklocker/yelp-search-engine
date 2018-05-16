@@ -1,6 +1,5 @@
 @(hits: List[ir.ReviewHit])
 @layouts.html.default("Review results") {
-<h2>Reviews</h2>
 @for(hit <- hits) {
   <div class='card row mt-3' id='reviewView'>
     <div class='card-body'>
