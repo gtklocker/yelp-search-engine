@@ -31,7 +31,10 @@ class SearcherWeb extends ScalatraServlet {
       case Some("stars")       => Some(SortByStars)
       case _                   => None
     }
-    val hits = Searcher.findBusinesses(nonempty(params.get("text")), location, sortBy)
+    var hits = Searcher.findBusinesses(nonempty(params.get("text")), location, sortBy)
+    if (nonempty(params.get("representative")).isDefined) {
+      hits = Searcher.representativeBusinesses(hits)
+    }
     views.html.businessResults(hits)
   }
 
@@ -41,7 +44,10 @@ class SearcherWeb extends ScalatraServlet {
       case Some("date")     => Some(SortByDate)
       case _                => None
     }
-    val hits = Searcher.findReviews(nonempty(params.get("businessName")), nonempty(params.get("text")), sortBy)
+    var hits = Searcher.findReviews(nonempty(params.get("businessName")), nonempty(params.get("text")), sortBy)
+    if (nonempty(params.get("representative")).isDefined) {
+      hits = Searcher.representativeReviews(hits)
+    }
     views.html.reviewResults(hits)
   }
 }

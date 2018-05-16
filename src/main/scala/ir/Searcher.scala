@@ -39,6 +39,14 @@ object Searcher {
       .map(BusinessHit.fromDocument)
   }
 
+  def representativeBusinesses(businesses: List[BusinessHit]): List[BusinessHit] = {
+    businesses.groupBy(_.stars).mapValues(_.take(2)).values.toList.flatten
+  }
+
+  def representativeReviews(reviews: List[ReviewHit]): List[ReviewHit] = {
+    reviews.groupBy(_.date.getYear).mapValues(_.take(2)).values.toList.flatten
+  }
+
   def businessHasReviewContaining(text: String): Query =
     new TermQuery(new Term("business.allReviews", text))
 
