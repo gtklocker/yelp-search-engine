@@ -1,7 +1,7 @@
 package ir
 
 import org.apache.lucene.document.{Document, TextField, StringField,
-LatLonPoint, Field, FloatDocValuesField, NumericDocValuesField,
+LatLonPoint, Field, StoredField, NumericDocValuesField, FloatDocValuesField,
 DateTools}
 
 object DocumentMakers {
@@ -10,10 +10,12 @@ object DocumentMakers {
     def ns(fieldName: String) = "review." + fieldName
 
     val doc = new Document
-    doc.add(new StringField(ns("business.name"), businessName, Field.Store.YES))
+    doc.add(new TextField(ns("business.name"), businessName, Field.Store.YES))
     doc.add(new TextField(ns("text"), text, Field.Store.YES))
     doc.add(new NumericDocValuesField(ns("date"), date))
+    doc.add(new StoredField(ns("date"), date))
     doc.add(new NumericDocValuesField(ns("useful"), useful))
+    doc.add(new StoredField(ns("useful"), useful))
     doc
   }
 
@@ -24,9 +26,11 @@ object DocumentMakers {
     val doc = new Document
     doc.add(new StringField(ns("id"), id, Field.Store.YES))
     doc.add(new StringField(ns("name"), name, Field.Store.YES))
+    doc.add(new StoredField(ns("stars"), stars))
     doc.add(new FloatDocValuesField(ns("stars"), stars))
     doc.add(new TextField(ns("allReviews"), allReviews, Field.Store.YES))
     doc.add(new NumericDocValuesField(ns("reviewCount"), reviewCount))
+    doc.add(new StoredField(ns("reviewCount"), reviewCount))
     doc.add(new LatLonPoint(ns("location"), latitude, longitude))
     doc
   }

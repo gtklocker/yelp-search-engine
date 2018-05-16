@@ -21,8 +21,8 @@ object SortByDate extends ReviewSortField("review.date", SortField.Type.LONG, tr
 object Searcher {
   val reader = DirectoryReader.open(Lucene.directory)
   val searcher = new IndexSearcher(reader)
-  val MAX_HITS = 20
-  val MAX_LOCATION_RADIUS = 50
+  val MAX_HITS = 500
+  val MAX_LOCATION_RADIUS = 500
 
   def findBusinesses(text: Option[String], location: Option[(Double, Double)],
       sortedBy: Option[BusinessSortField]): List[BusinessHit] = {
@@ -37,6 +37,14 @@ object Searcher {
     val query = queryBuilder.build()
     docsForQuery(query, sortedBy)
       .map(BusinessHit.fromDocument)
+  }
+
+  def representativeBusinesses(businesses: List[BusinessHit]): List[BusinessHit] = {
+    businesses.groupBy(_.stars).mapValues(_.take(2)).values.toList.flatten
+  }
+
+  def representativeReviews(reviews: List[ReviewHit]): List[ReviewHit] = {
+    reviews.groupBy(_.date.getYear).mapValues(_.take(2)).values.toList.flatten
   }
 
   def businessHasReviewContaining(text: String): Query =
@@ -78,15 +86,18 @@ object Searcher {
 }
 
 object SearcherDemo extends App {
-  val businessHits = Searcher.findBusinesses(Some("gtklockern0m4tch3s"), None, sortedBy = Some(SortByStars))
+  //val businessHits = Searcher.findBusinesses(Some("bad"), None, sortedBy = Some(SortByStars))
+  val businessHits = Searcher.findBusinesses(Some("bad"), None, sortedBy = None)
   println(s"Got ${businessHits.length} business hits.")
   for (business <- businessHits) {
-    println(s"Business ${business.name}: ${business.allReviews.substring(0, 140)}...")
+    println(s"Business ${business.name} (${business.stars}): ${business.allReviews.substring(0, 140)}...")
   }
 
+  /*
   val reviewHits = Searcher.findReviews(businessName = Some("pizza"), text = Some("good"), sortedBy = Some(SortByDate))
   println(s"Got ${reviewHits.length} review hits.")
   for (review <- reviewHits) {
     println(s"Review ${review.businessName}: ${review.text.substring(0, 140)}...")
   }
+  */
 }

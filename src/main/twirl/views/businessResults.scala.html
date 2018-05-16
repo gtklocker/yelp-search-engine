@@ -1,16 +1,50 @@
 @(hits: List[ir.BusinessHit])
 @layouts.html.default("Business results") {
-<ul>
 @for(hit <- hits) {
-  <li class='card row mt-3' id='businessView'>
+  <div class='card row mt-3' id='businessView'>
     <div class='card-body'>
       <h5 class='card-title'>@hit.name</h5>
+      <h6 class="card-subtitle mb-2 text-muted">
+        <span class="stars-container">
+          <span class="bg-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </span>
+          <span class="fg-stars">
+            @for(i <- 1 to Math.floor(hit.stars).toInt) {
+            <i class="fas fa-star yelp-star"></i>
+            }
+            @for(i <- 1 to Math.ceil(hit.stars - Math.floor(hit.stars)).toInt) {
+            <i class="fas fa-star-half yelp-star"></i>
+            }
+          </span>
+        </span>
 
-      <p class='card-text'>
+        <!-- @hit.stars stars -->
+        | @hit.reviewCount reviews
+      </h6>
+
+      <p class='card-text expandable-text'>
       @hit.allReviews.substring(0, 140)...
       </p>
     </div>
-  </li>
+  </div>
 }
-</ul>
+<style>
+  .stars-container {
+    position: relative;
+  }
+  .bg-stars {
+    color: lightgrey;
+  }
+  .fg-stars {
+    color: #f15b4f;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
 }
