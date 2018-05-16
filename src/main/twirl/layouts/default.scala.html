@@ -5,6 +5,8 @@
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
         integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
         crossorigin="anonymous">
+  <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/3.0.2/timeago.min.js"></script>
   <style>
     body {
       margin-top: 3rem;
@@ -15,4 +17,7 @@
   <div class="container" id='root'>
     @body
   </div>
+  <script>
+    timeago().render(document.querySelectorAll('.need_to_be_rendered'));
+  </script>
 </body>

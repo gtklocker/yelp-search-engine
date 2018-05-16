@@ -6,6 +6,11 @@
   <li class='card row mt-3' id='reviewView'>
     <div class='card-body'>
       <h5 class='card-title'>@hit.businessName</h5>
+      <h6 class="card-subtitle mb-2 text-muted">
+        posted <span class="need_to_be_rendered"
+                         datetime="@hit.date.getTime()">@hit.date</span>
+        | usefulness: @hit.useful
+      </h6>
 
       <p class='card-text'>
       @hit.text.substring(0, 140)...
