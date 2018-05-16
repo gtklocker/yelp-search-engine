@@ -15,6 +15,24 @@
     body {
       margin-top: 3rem;
     }
+    .card:hover > .card-body > .expandable-text {
+      max-height: 100%;
+      transition: max-height 200ms ease-in;
+
+      white-space: normal;
+    }
+
+    .card:hover {
+      background: #f7faff;
+    }
+
+    .expandable-text {
+      max-height: 5em;
+      transition: max-height 200ms ease-out;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   </style>
 </head>
 <body>
