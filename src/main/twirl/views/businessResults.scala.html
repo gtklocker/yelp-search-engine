@@ -6,12 +6,24 @@
     <div class='card-body'>
       <h5 class='card-title'>@hit.name</h5>
       <h6 class="card-subtitle mb-2 text-muted">
-        @for(i <- 1 to Math.floor(hit.stars).toInt) {
-        <i class="fas fa-star yelp-star"></i>
-        }
-        @for(i <- 1 to Math.ceil(hit.stars - Math.floor(hit.stars)).toInt) {
-        <i class="fas fa-star-half yelp-star"></i>
-        }
+        <span class="stars-container">
+          <span class="bg-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </span>
+          <span class="fg-stars">
+            @for(i <- 1 to Math.floor(hit.stars).toInt) {
+            <i class="fas fa-star yelp-star"></i>
+            }
+            @for(i <- 1 to Math.ceil(hit.stars - Math.floor(hit.stars)).toInt) {
+            <i class="fas fa-star-half yelp-star"></i>
+            }
+          </span>
+        </span>
+
         <!-- @hit.stars stars -->
         | @hit.reviewCount reviews
       </h6>
@@ -24,8 +36,17 @@
 }
 </ul>
 <style>
-  .yelp-star {
+  .stars-container {
+    position: relative;
+  }
+  .bg-stars {
+    color: lightgrey;
+  }
+  .fg-stars {
     color: #f15b4f;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 </style>
 }
