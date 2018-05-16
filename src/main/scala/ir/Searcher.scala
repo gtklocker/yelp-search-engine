@@ -21,7 +21,7 @@ object SortByDate extends ReviewSortField("review.date", SortField.Type.LONG, tr
 object Searcher {
   val reader = DirectoryReader.open(Lucene.directory)
   val searcher = new IndexSearcher(reader)
-  val MAX_HITS = 20
+  val MAX_HITS = 500
   val MAX_LOCATION_RADIUS = 50
 
   def findBusinesses(text: Option[String], location: Option[(Double, Double)],
