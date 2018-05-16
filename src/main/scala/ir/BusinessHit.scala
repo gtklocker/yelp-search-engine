@@ -2,7 +2,7 @@ package ir
 
 import org.apache.lucene.document.Document
 
-case class BusinessHit(id: String, name: String, allReviews: String, stars: Float, reviewCount: Long)
+case class BusinessHit(id: String, name: String, reviewText: String, stars: Float, reviewCount: Long)
 
 object BusinessHit {
   def fromDocument(doc: Document) = BusinessHit(
@@ -10,7 +10,7 @@ object BusinessHit {
     name = doc.getField("business.name").stringValue,
 
     // actually only the first review is displayed
-    allReviews = doc.getField("business.allReviews").stringValue,
+    reviewText = doc.getField("business.reviewText").stringValue,
 
     stars = doc.getField("business.stars").numericValue.floatValue,
     reviewCount = doc.getField("business.reviewCount").numericValue.longValue

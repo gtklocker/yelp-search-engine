@@ -28,9 +28,6 @@ object DocumentMakers {
     doc.add(new StringField(ns("name"), name, Field.Store.YES))
     doc.add(new StoredField(ns("stars"), stars))
     doc.add(new FloatDocValuesField(ns("stars"), stars))
-    //doc.add(new TextField(ns("allReviews"), allReviews, Field.Store.YES))
-    //doc.add(new NumericDocValuesField(ns("reviewCount"), reviewCount))
-    //doc.add(new StoredField(ns("reviewCount"), reviewCount))
     doc.add(new LatLonPoint(ns("location"), latitude, longitude))
     doc
   }

@@ -48,7 +48,7 @@ object Searcher {
   }
 
   def businessHasReviewContaining(text: String): Query =
-    new TermQuery(new Term("business.allReviews", text))
+    new TermQuery(new Term("business.reviewText", text))
 
   def businessNearLocation(location: (Double, Double)): Query =
     LatLonPoint.newDistanceQuery("business.location", location._1, location._2, MAX_LOCATION_RADIUS)
@@ -90,7 +90,7 @@ object SearcherDemo extends App {
   val businessHits = Searcher.findBusinesses(Some("bad"), None, sortedBy = None)
   println(s"Got ${businessHits.length} business hits.")
   for (business <- businessHits) {
-    println(s"Business ${business.name} (${business.stars}): ${business.allReviews.substring(0, 140)}...")
+    println(s"Business ${business.name} (${business.stars}): ${business.reviewText.substring(0, 140)}...")
   }
 
   /*

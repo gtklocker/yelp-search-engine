@@ -69,13 +69,13 @@ object Importer extends App {
     }
 
     val text = rs.getString("review.text")
-    currentBusinessDoc.get.add(new TextField("business.allReviews", text, Field.Store.YES))
+    currentBusinessDoc.get.add(new TextField("business.reviewText", text, Field.Store.YES))
   }
 
   def saveCurrentBusinessDocument() {
     currentBusinessDoc match {
       case Some(doc) => {
-        val reviewCount = doc.getValues("business.allReviews").length
+        val reviewCount = doc.getValues("business.reviewText").length
         doc.add(new NumericDocValuesField("business.reviewCount", reviewCount))
         doc.add(new StoredField("business.reviewCount", reviewCount))
         writer.addDocument(doc)
