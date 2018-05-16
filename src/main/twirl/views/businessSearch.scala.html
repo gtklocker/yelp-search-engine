@@ -4,10 +4,11 @@
 	<div class="form-row form-group">
 		<input placeholder="Review text" name="text" class="form-control form-control-lg">
 	</div>
-	<div class="form-row form-group">
-		<input placeholder="Latitude" name="latitude" class="col form-control">
-		<input placeholder="Longitude" name="longitude" class="col form-control">
-	</div>
+  <div class="form-row form-group">
+    <input id="hidden-latitude" name="latitude" type="hidden">
+    <input id="hidden-longitude" name="longitude" type="hidden">
+    <input id="searchTextField" type="text" class="form-control form-control-md">
+  </div>
 	<select name="sortBy" class="form-row form-control form-group">
 		<option value="">Sort by...</option>
 		<option value="reviewCount">Sort by number of reviews</option>
@@ -21,4 +22,19 @@
 </form>
 
 <a href='/search/reviews'>Or search for reviews instead...</a>
+
+<script>
+function initialize() {
+  var input = document.getElementById('searchTextField');
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  google.maps.event.addListener(autocomplete, 'place_changed', function () {
+    var place = autocomplete.getPlace();
+    document.getElementById('hidden-latitude').value = place.geometry.location.lat();
+    document.getElementById('hidden-longitude').value = place.geometry.location.lng();
+  });
+  console.log('loaded google maps!');
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 }
