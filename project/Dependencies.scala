@@ -24,4 +24,8 @@ object Dependencies {
     "org.eclipse.jetty"           %  "jetty-webapp"        % "9.4.7.v20170914"  % Provided,
     "javax.servlet"               %  "javax.servlet-api"   % "3.1.0"            % Provided
   )
+
+  lazy val progressBarDependencies = Seq(
+    "me.tongfei" % "progressbar" % "0.7.0"
+  )
 }
