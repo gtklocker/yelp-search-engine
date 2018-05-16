@@ -1,24 +1,24 @@
 @()
 @layouts.html.default("Search for businesses"){
 <form action='/results/businesses'>
-	<div class="form-row form-group">
-		<input placeholder="Review text" name="text" class="form-control form-control-lg">
-	</div>
+  <div class="form-row form-group">
+    <input placeholder="Review text" name="text" class="form-control form-control-lg">
+  </div>
   <div class="form-row form-group">
     <input id="hidden-latitude" name="latitude" type="hidden">
     <input id="hidden-longitude" name="longitude" type="hidden">
     <input id="searchTextField" type="text" class="form-control form-control-md">
   </div>
-	<select name="sortBy" class="form-row form-control form-group">
-		<option value="">Sort by...</option>
-		<option value="reviewCount">Sort by number of reviews</option>
-		<option value="stars">Sort by number of stars</option>
-	</select>
+  <select name="sortBy" class="form-row form-control form-group">
+    <option value="">Sort by...</option>
+    <option value="reviewCount">Sort by number of reviews</option>
+    <option value="stars">Sort by number of stars</option>
+  </select>
   <div class="form-row form-group form-check">
     <input id="representativeInput" class="form-check-input" type="checkbox" name="representative">
     <label for="representativeInput" class="form-check-label">Representative results</label>
   </div>
-	<input type="submit" value="Search" class="btn btn-primary">
+  <input type="submit" value="Search" class="btn btn-primary">
 </form>
 
 <a href='/search/reviews'>Or search for reviews instead...</a>
