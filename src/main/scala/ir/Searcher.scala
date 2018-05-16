@@ -22,7 +22,7 @@ object Searcher {
   val reader = DirectoryReader.open(Lucene.directory)
   val searcher = new IndexSearcher(reader)
   val MAX_HITS = 500
-  val MAX_LOCATION_RADIUS = 50
+  val MAX_LOCATION_RADIUS = 500
 
   def findBusinesses(text: Option[String], location: Option[(Double, Double)],
       sortedBy: Option[BusinessSortField]): List[BusinessHit] = {
