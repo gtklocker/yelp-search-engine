@@ -6,15 +6,17 @@ import org.apache.lucene.document.DateTools.Resolution
 import org.apache.lucene.document.{Document, TextField, StringField,
 LatLonPoint, Field, StoredField, NumericDocValuesField, FloatDocValuesField,
 DateTools}
+import me.tongfei.progressbar.ProgressBar
+import java.sql.ResultSet
 
 object Importer extends App {
   println("Starting import... to %s".format(Lucene.indexPath.toString()))
 
   val writer = Lucene.writer
   val db = new Database
+  var currentBusinessDoc: Option[Document] = None
 
-  indexReviewDocuments()
-  indexBusinessDocuments()
+  index
 
   println(s"${writer.numDocs} document(s) indexed!")
 
@@ -22,66 +24,63 @@ object Importer extends App {
   writer.close
 
   println("Import done.")
-  
-  def indexReviewDocuments(){  
-    println("Importing review documents: ")
-    val rs = db.queryResults("""select business.name, text, date, useful
-                               |from review
-                               |join business
-                               |on review.business_id = business.id
-                               """.stripMargin)
-    
+
+  def index() {
+    val pb = new ProgressBar("Importing", db.reviewCount + 1)
+    val rs = db.reviewsWithBusinessInfo
     while (rs.next) {
-      writer.addDocument(makeReviewDocument(
-        businessName = rs.getString("business.name"),
-        text = rs.getString("text"),
-        date = rs.getDate("date").getTime(),
-        useful = rs.getLong("useful")
-      ))
-      print(".")
+      indexReviewDocumentFromRow(rs)
+      indexBusinessDocumentFromRow(rs)
+
+      pb.step
     }
-    println("")
+
+    // one leftover document
+    saveCurrentBusinessDocument
+    pb.step
+
+    pb.close
   }
 
-  def indexBusinessDocuments() {
-    println("Importing business documents: ")
+  def indexReviewDocumentFromRow(rs: ResultSet) {
+    writer.addDocument(makeReviewDocument(
+      businessName = rs.getString("business.name"),
+      text = rs.getString("review.text"),
+      date = rs.getDate("review.date").getTime(),
+      useful = rs.getLong("review.useful")
+    ))
+  }
 
-    val businessIdToDoc = scala.collection.mutable.Map[String, Document]()
-    val rs = db.queryResults("""select id, name, stars, latitude, longitude
-                               |from business
-                               """.stripMargin)
-    while (rs.next) {
-      val businessId = rs.getString("id")
-      businessIdToDoc(businessId) = makeBusinessDocument(
+  def indexBusinessDocumentFromRow(rs: ResultSet) {
+    val businessId = rs.getString("business.id")
+    val previousBusinessId = currentBusinessDoc match {
+      case Some(doc) => Some(doc.getField("business.id").stringValue)
+      case None => None
+    }
+    if (!previousBusinessId.isDefined || businessId != previousBusinessId.get) {
+      saveCurrentBusinessDocument
+      currentBusinessDoc = Some(makeBusinessDocument(
         id = businessId,
-        name = rs.getString("name"),
-        stars = rs.getFloat("stars"),
-        latitude = rs.getFloat("latitude"),
-        longitude = rs.getFloat("longitude")
-      )
-      print(".")
+        name = rs.getString("business.name"),
+        stars = rs.getFloat("business.stars"),
+        latitude = rs.getFloat("business.latitude"),
+        longitude = rs.getFloat("business.longitude")
+      ))
     }
 
-    val reviewRs = db.queryResults("""select business_id, text
-                                      |from review
-                                      """.stripMargin)
-    while (reviewRs.next) {
-      val businessId = reviewRs.getString("business_id")
-      val text = reviewRs.getString("text")
-      val doc = businessIdToDoc(businessId)
-      doc.add(new TextField("business.allReviews", text, Field.Store.YES))
-      print(",")
-    }
+    val text = rs.getString("review.text")
+    currentBusinessDoc.get.add(new TextField("business.allReviews", text, Field.Store.YES))
+  }
 
-    businessIdToDoc foreach {
-      case (_, doc) => {
+  def saveCurrentBusinessDocument() {
+    currentBusinessDoc match {
+      case Some(doc) => {
         val reviewCount = doc.getValues("business.allReviews").length
         doc.add(new NumericDocValuesField("business.reviewCount", reviewCount))
         doc.add(new StoredField("business.reviewCount", reviewCount))
         writer.addDocument(doc)
       }
+      case None => {}
     }
-
-    println("")
   }
 }

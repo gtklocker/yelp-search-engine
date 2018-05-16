@@ -8,7 +8,10 @@ object BusinessHit {
   def fromDocument(doc: Document) = BusinessHit(
     id = doc.getField("business.id").stringValue,
     name = doc.getField("business.name").stringValue,
+
+    // actually only the first review is displayed
     allReviews = doc.getField("business.allReviews").stringValue,
+
     stars = doc.getField("business.stars").numericValue.floatValue,
     reviewCount = doc.getField("business.reviewCount").numericValue.longValue
   )

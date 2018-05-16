@@ -10,6 +10,33 @@ class Database {
   private var connection = DriverManager.getConnection(url, username, password)
   private val limit = sys.env.get("IR_DB_LIMIT")
 
+  def reviewCount(): Long = {
+    querySingleLong("select count(*) from review join business on review.business_id = business.id where city = 'Toronto'")
+  }
+
+  def businessCount(): Long = {
+    querySingleLong("select count(*) from business where city = 'Toronto'")
+  }
+
+  def reviewsWithBusinessInfo(): ResultSet = {
+    queryResults("""select business.name, review.text, review.date,
+                   |review.useful, business.id, business.name, business.stars,
+                   |business.latitude, business.longitude
+                   |from review join business
+                   |on review.business_id = business.id
+                   |where business.city = 'Toronto'
+                   |order by business.id
+                   """.stripMargin)
+  }
+
+  def querySingleLong(query: String): Long = {
+    val res = queryResults(query)
+    res.next
+    val ret = res.getLong(1)
+    while (res.next) {}
+    ret
+  }
+
   def close() {
     connection.close
   }
