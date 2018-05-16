@@ -1,8 +1,7 @@
 @(hits: List[ir.BusinessHit])
 @layouts.html.default("Business results") {
-<ul>
 @for(hit <- hits) {
-  <li class='card row mt-3' id='businessView'>
+  <div class='card row mt-3' id='businessView'>
     <div class='card-body'>
       <h5 class='card-title'>@hit.name</h5>
       <h6 class="card-subtitle mb-2 text-muted">
@@ -32,9 +31,8 @@
       @hit.allReviews.substring(0, 140)...
       </p>
     </div>
-  </li>
+  </div>
 }
-</ul>
 <style>
   .stars-container {
     position: relative;
