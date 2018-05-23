@@ -68,7 +68,7 @@ object Importer extends App {
         "business.city", "business.state", "business.postal_code")
           .map(rs.getString(_))
           .filter(_.length > 0)
-          .mkString(",")
+          .mkString(", ")
       currentBusinessDoc = Some(makeBusinessDocument(
         id = businessId,
         name = rs.getString("business.name"),

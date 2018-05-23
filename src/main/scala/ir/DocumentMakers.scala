@@ -29,6 +29,8 @@ object DocumentMakers {
     doc.add(new StoredField(ns("stars"), stars))
     doc.add(new FloatDocValuesField(ns("stars"), stars))
     doc.add(new LatLonPoint(ns("location"), latitude, longitude))
+    doc.add(new StoredField(ns("latitude"), latitude))
+    doc.add(new StoredField(ns("longitude"), longitude))
     doc.add(new StoredField(ns("formattedLocation"), formattedLocation))
     doc
   }

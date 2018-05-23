@@ -6,6 +6,11 @@
     <div class='card-body'>
       <h5 class='card-title'>@hit.name</h5>
       <h6 class="card-subtitle mb-2 text-muted">
+        <div>
+          <i class="fas fa-map-marker"></i>
+          <a href="https://www.google.com/maps/?q=@hit.latitude,@hit.longitude">@hit.formattedLocation</a>
+        </div>
+
         <span class="stars-container">
           <span class="bg-stars">
             <i class="fas fa-star"></i>

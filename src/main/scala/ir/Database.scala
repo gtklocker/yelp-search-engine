@@ -21,7 +21,9 @@ class Database {
   def reviewsWithBusinessInfo(): ResultSet = {
     queryResults("""select business.name, review.text, review.date,
                    |review.useful, business.id, business.name, business.stars,
-                   |business.latitude, business.longitude
+                   |business.latitude, business.longitude,
+                   |business.neighborhood, business.address,
+                   |business.city, business.state, business.postal_code
                    |from review join business
                    |on review.business_id = business.id
                    |where business.city = 'Toronto'
