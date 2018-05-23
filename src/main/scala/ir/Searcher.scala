@@ -5,9 +5,11 @@ import org.apache.lucene.search.{IndexSearcher, Query, TermQuery, BooleanQuery,
 BooleanClause, TopDocs, SortField, Sort}
 import org.apache.lucene.document.{Document, LatLonPoint}
 
-class BusinessSortField(val field: String, val fieldType: SortField.Type) extends SortField(field, fieldType)
+class BusinessSortField(val field: String, val fieldType: SortField.Type, reverse: Boolean) extends SortField(field, fieldType, reverse) {
+  def this(field: String, fieldType: SortField.Type) = this(field, fieldType, false)
+}
 object SortByReviewCount extends BusinessSortField("business.reviewCount", SortField.Type.LONG)
-object SortByStars extends BusinessSortField("business.stars", SortField.Type.FLOAT)
+object SortByStars extends BusinessSortField("business.stars", SortField.Type.FLOAT, true)
 
 class ReviewSortField(val field: String, val fieldType: SortField.Type, reverse: Boolean) extends SortField(field, fieldType, reverse) {
   def this(field: String, fieldType: SortField.Type) = this(field, fieldType, false)
