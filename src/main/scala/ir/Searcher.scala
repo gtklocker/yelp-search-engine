@@ -38,12 +38,22 @@ object Searcher {
       .map(BusinessHit.fromDocument)
   }
 
-  def representativeBusinesses(businesses: List[BusinessHit]): List[BusinessHit] = {
-    businesses.groupBy(_.stars).mapValues(_.take(2)).values.toList.flatten
+  def representativeBusinesses(businesses: List[BusinessHit], sortBy: Option[BusinessSortField]): List[BusinessHit] = {
+    val ret = businesses.groupBy(_.stars).mapValues(_.take(2)).values.toList.flatten
+    sortBy match {
+      case Some(SortByReviewCount) => ret.sortWith(_.reviewCount > _.reviewCount)
+      case Some(SortByStars) => ret.sortWith(_.stars > _.stars)
+      case _ => ret
+    }
   }
 
-  def representativeReviews(reviews: List[ReviewHit]): List[ReviewHit] = {
-    reviews.groupBy(_.date.getYear).mapValues(_.take(2)).values.toList.flatten
+  def representativeReviews(reviews: List[ReviewHit], sortBy: Option[ReviewSortField]): List[ReviewHit] = {
+    val ret = reviews.groupBy(_.date.getYear).mapValues(_.take(2)).values.toList.flatten
+    sortBy match {
+      case Some(SortByUseful) => ret.sortWith(_.useful > _.useful)
+      case Some(SortByDate) => ret.sortWith((a, b) => a.date.after(b.date))
+      case _ => ret
+    }
   }
 
   def businessHasReviewContaining(text: String): Query =
