@@ -10,18 +10,22 @@ import me.tongfei.progressbar.ProgressBar
 import java.sql.ResultSet
 
 object Importer extends App {
-  println("Starting import... to %s".format(Lucene.indexPath.toString()))
+  println("Starting import...")
 
-  val writer = Lucene.writer
+  val reviewWriter = ReviewIndex.writer
+  val businessWriter = BusinessIndex.writer
+
   val db = new Database
   var currentBusinessDoc: Option[Document] = None
 
   index
 
-  println(s"${writer.numDocs} document(s) indexed!")
+  println(s"${reviewWriter.numDocs} review documents indexed!")
+  println(s"${businessWriter.numDocs} business documents indexed!")
 
   db.close
-  writer.close
+  reviewWriter.close
+  businessWriter.close
 
   println("Import done.")
 
@@ -43,7 +47,7 @@ object Importer extends App {
   }
 
   def indexReviewDocumentFromRow(rs: ResultSet) {
-    writer.addDocument(makeReviewDocument(
+    reviewWriter.addDocument(makeReviewDocument(
       businessName = rs.getString("business.name"),
       text = rs.getString("review.text"),
       date = rs.getDate("review.date").getTime(),
@@ -78,7 +82,7 @@ object Importer extends App {
         val reviewCount = doc.getValues("business.reviewText").length
         doc.add(new NumericDocValuesField("business.reviewCount", reviewCount))
         doc.add(new StoredField("business.reviewCount", reviewCount))
-        writer.addDocument(doc)
+        businessWriter.addDocument(doc)
       }
       case None => {}
     }

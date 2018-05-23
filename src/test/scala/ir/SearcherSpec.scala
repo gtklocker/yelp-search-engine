@@ -23,8 +23,8 @@ class SearcherSpec extends FlatSpec with Matchers {
   }
 
   it should "return the maximum amount ot business results on something generic" in {
-    val results = Searcher.findBusinesses(Some("a"), None, None)
-    results.length should be (20)
+    val results = Searcher.findBusinesses(Some("good"), None, None)
+    results.length should be (500)
   }
 
   it should "return no business results on something that does not exist" in {
@@ -52,8 +52,8 @@ class SearcherSpec extends FlatSpec with Matchers {
   }
 
   it should "return the maximum amount of review results on something generic" in {
-    val results = Searcher.findReviews(None, Some("a"), None)
-    results.length should be (20)
+    val results = Searcher.findReviews(None, Some("good"), None)
+    results.length should be (500)
   }
 
   it should "return no review results on something that does not exist" in {

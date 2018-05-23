@@ -1,11 +1,8 @@
 package ir
 
-import org.apache.lucene.analysis.core.SimpleAnalyzer
-import org.apache.lucene.analysis.standard.StandardAnalyzer
-import org.apache.lucene.index.{DirectoryReader, IndexWriter, IndexWriterConfig, Term}
+import org.apache.lucene.index.Term
 import org.apache.lucene.search.{IndexSearcher, Query, TermQuery, BooleanQuery,
 BooleanClause, TopDocs, SortField, Sort}
-import org.apache.lucene.store.RAMDirectory
 import org.apache.lucene.document.{Document, LatLonPoint}
 
 class BusinessSortField(val field: String, val fieldType: SortField.Type) extends SortField(field, fieldType)
@@ -19,8 +16,6 @@ object SortByUseful extends ReviewSortField("review.useful", SortField.Type.LONG
 object SortByDate extends ReviewSortField("review.date", SortField.Type.LONG, true)
 
 object Searcher {
-  val reader = DirectoryReader.open(Lucene.directory)
-  val searcher = new IndexSearcher(reader)
   val MAX_HITS = 500
   val MAX_LOCATION_RADIUS = 500
 
@@ -35,7 +30,7 @@ object Searcher {
     }
 
     val query = queryBuilder.build()
-    docsForQuery(query, sortedBy)
+    docsForQuery(BusinessIndex.searcher, query, sortedBy)
       .map(BusinessHit.fromDocument)
   }
 
@@ -64,7 +59,7 @@ object Searcher {
     }
 
     val query = queryBuilder.build()
-    docsForQuery(query, sortedBy)
+    docsForQuery(ReviewIndex.searcher, query, sortedBy)
       .map(ReviewHit.fromDocument)
   }
 
@@ -74,7 +69,7 @@ object Searcher {
   def reviewContains(text: String): Query =
     new TermQuery(new Term("review.text", text))
 
-  def docsForQuery(query: Query, sortedBy: Option[SortField]): List[Document] = {
+  def docsForQuery(searcher: IndexSearcher, query: Query, sortedBy: Option[SortField]): List[Document] = {
     val results = sortedBy match {
       case Some(sortField) => searcher.search(query, MAX_HITS, new Sort(sortField))
       case None            => searcher.search(query, MAX_HITS)
