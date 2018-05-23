@@ -1,5 +1,6 @@
 @(hits: List[ir.ReviewHit])
 @layouts.html.default("Review results") {
+<a href='/search/reviews'><i class="fas fa-arrow-left"></i> Search again?</a>
 @for(hit <- hits) {
   <div class='card row mt-3'>
     <div class='card-body'>

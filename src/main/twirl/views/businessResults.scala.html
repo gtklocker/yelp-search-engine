@@ -1,6 +1,7 @@
 @(hits: List[ir.BusinessHit])
 @import play.twirl.api.HtmlFormat
 @layouts.html.default("Business results") {
+<a href='/search/businesses'><i class="fas fa-arrow-left"></i> Search again?</a>
 @for(hit <- hits) {
   <div class='card row mt-3'>
     <div class='card-body'>
