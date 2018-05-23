@@ -1,9 +1,11 @@
 package ir
 
 import org.apache.lucene.index.Term
-import org.apache.lucene.search.{IndexSearcher, Query, TermQuery, BooleanQuery,
+import org.apache.lucene.search.{IndexSearcher, Query, BooleanQuery,
 BooleanClause, TopDocs, SortField, Sort}
 import org.apache.lucene.document.{Document, LatLonPoint}
+import org.apache.lucene.queryparser.classic.QueryParser
+import org.apache.lucene.analysis.standard.StandardAnalyzer
 
 class BusinessSortField(val field: String, val fieldType: SortField.Type, reverse: Boolean) extends SortField(field, fieldType, reverse) {
   def this(field: String, fieldType: SortField.Type) = this(field, fieldType, false)
@@ -45,7 +47,7 @@ object Searcher {
   }
 
   def businessHasReviewContaining(text: String): Query =
-    new TermQuery(new Term("business.reviewText", text))
+    queryFieldContains("business.reviewText", text)
 
   def businessNearLocation(location: (Double, Double)): Query =
     LatLonPoint.newDistanceQuery("business.location", location._1, location._2, MAX_LOCATION_RADIUS)
@@ -66,10 +68,15 @@ object Searcher {
   }
 
   def reviewForBusinessWithName(businessName: String): Query =
-    new TermQuery(new Term("review.business.name", businessName))
+    queryFieldContains("review.business.name", businessName)
 
   def reviewContains(text: String): Query =
-    new TermQuery(new Term("review.text", text))
+    queryFieldContains("review.text", text)
+
+  def queryFieldContains(field: String, text: String): Query = {
+    val queryParser = new QueryParser(field, new StandardAnalyzer)
+    queryParser.parse(text)
+  }
 
   def docsForQuery(searcher: IndexSearcher, query: Query, sortedBy: Option[SortField]): List[Document] = {
     val results = sortedBy match {
