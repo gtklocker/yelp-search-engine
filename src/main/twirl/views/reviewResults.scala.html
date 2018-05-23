@@ -1,7 +1,7 @@
 @(hits: List[ir.ReviewHit])
 @layouts.html.default("Review results") {
 @for(hit <- hits) {
-  <div class='card row mt-3' id='reviewView'>
+  <div class='card row mt-3'>
     <div class='card-body'>
       <h5 class='card-title'>@hit.businessName</h5>
       <h6 class="card-subtitle mb-2 text-muted">
@@ -11,7 +11,7 @@
       </h6>
 
       <p class='card-text expandable-text'>
-      @hit.text
+        @hit.text
       </p>
     </div>
   </div>

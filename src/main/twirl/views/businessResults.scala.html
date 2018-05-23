@@ -2,7 +2,7 @@
 @import play.twirl.api.HtmlFormat
 @layouts.html.default("Business results") {
 @for(hit <- hits) {
-  <div class='card row mt-3' id='businessView'>
+  <div class='card row mt-3'>
     <div class='card-body'>
       <h5 class='card-title'>@hit.name</h5>
       <h6 class="card-subtitle mb-2 text-muted">
