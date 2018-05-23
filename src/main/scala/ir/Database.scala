@@ -11,11 +11,7 @@ class Database {
   private val limit = sys.env.get("IR_DB_LIMIT")
 
   def reviewCount(): Long = {
-    querySingleLong("select count(*) from review join business on review.business_id = business.id where city = 'Toronto'")
-  }
-
-  def businessCount(): Long = {
-    querySingleLong("select count(*) from business where city = 'Toronto'")
+    querySingleLong("select count(*) from review join business on review.business_id = business.id")
   }
 
   def reviewsWithBusinessInfo(): ResultSet = {
@@ -26,7 +22,6 @@ class Database {
                    |business.city, business.state, business.postal_code
                    |from review join business
                    |on review.business_id = business.id
-                   |where business.city = 'Toronto'
                    |order by business.id
                    """.stripMargin)
   }
