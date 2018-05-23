@@ -63,12 +63,19 @@ object Importer extends App {
     }
     if (!previousBusinessId.isDefined || businessId != previousBusinessId.get) {
       saveCurrentBusinessDocument
+
+      val formattedLocation = List("business.neighborhood", "business.address",
+        "business.city", "business.state", "business.postal_code")
+          .map(rs.getString(_))
+          .filter(_.length > 0)
+          .mkString(",")
       currentBusinessDoc = Some(makeBusinessDocument(
         id = businessId,
         name = rs.getString("business.name"),
         stars = rs.getFloat("business.stars"),
         latitude = rs.getFloat("business.latitude"),
-        longitude = rs.getFloat("business.longitude")
+        longitude = rs.getFloat("business.longitude"),
+        formattedLocation = formattedLocation
       ))
     }
 
