@@ -16,8 +16,8 @@ object SortByUseful extends ReviewSortField("review.useful", SortField.Type.LONG
 object SortByDate extends ReviewSortField("review.date", SortField.Type.LONG, true)
 
 object Searcher {
-  val MAX_HITS = 500
-  val MAX_LOCATION_RADIUS = 500
+  val MAX_HITS = 100
+  val MAX_LOCATION_RADIUS = 20 * 1000 // 20km
 
   def findBusinesses(text: Option[String], location: Option[(Double, Double)],
       sortedBy: Option[BusinessSortField]): List[BusinessHit] = {
